@@ -1,10 +1,12 @@
 const express = require("express");
+const cors = require("cors");
 app = express();
 const PORT = 8080;
 
 let roster = [];
 
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
 app.get("/api/roster", (req, res) => {
     res.json(roster);
