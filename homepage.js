@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     })
     .then(data => {
-        scoreboard.textContent = `${data.won} - ${data.lost}`;
+        scoreboard.textContent = `${data[0].won} - ${data[0].lost}`;
     })
     .catch(error => console.error('Error fetching score:', error));
 });

@@ -24,19 +24,60 @@ const playerSchema = new mongoose.Schema({
 
 const Player = mongoose.model("Player", playerSchema);
 
-let record = {
-    won: 0,
-    lost: 0
-} 
+const recordSchema = new mongoose.Schema({
+    won: Number,
+    lost: Number
+});
+
+const Record = mongoose.model("Score", recordSchema);
 
 app.use(cors());
 app.use(express.json());
 
-app.get("/api/record", (req, res) => {
-    res.json(record);
+app.get("/api/record", async (req, res) => {
+    try {
+        const record = await Record.find()
+        res.json(record);
+    }
+    catch(error) {
+        res.status(500).json({ error: "Error fetching score" });
+    }
 });
 
-app.put("/api/record", (req, res) => {
+app.post("/api/record", async (req, res) => {
+    try {
+        newScore = new Record({
+            won: req.body.won,
+            lost: req.body.lost
+        })
+        updatedScore = await newScore.save();
+        res.status(201).json(updatedScore);
+    }
+    catch(error) {
+        res.status(500).json({ error: "Error updating score" });
+    }
+    record = req.body;
+    res.status(200).json(record);
+});
+
+app.put("/api/record", async (req, res) => {
+    try {
+        updatedScore = await Record.findOneAndUpdate(
+            {},
+            req.body,
+            { new: true }
+        );
+
+        if (updatedScore) {
+            res.status(200).json(updatedScore);
+        }
+        else {
+            res.status(400).json({ message: `score unable to be updated` });
+        }
+    }
+    catch(error) {
+        res.status(500).json({ error: "Error updating score" });
+    }
     record = req.body;
     res.status(200).json(record);
 });
