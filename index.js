@@ -1,10 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+require("dotenv").config();
 app = express();
 const PORT = 8080;
 
-mongoose.connect('mongodb+srv://jacobsmit:Rupert2003@trog-management.e5rdlrf.mongodb.net/trog-data',
+mongoose.connect(process.env.MONGODB_URI,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
