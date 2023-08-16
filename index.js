@@ -1,9 +1,29 @@
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
 app = express();
 const PORT = 8080;
 
-let roster = [];
+mongoose.connect('mongodb+srv://jacobsmit:Rupert2003@trog-management.e5rdlrf.mongodb.net/trog-data',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
+);
+
+const playerSchema = new mongoose.Schema({
+    id: String,
+    name: String,
+    role: String,
+    height: String,
+    weight: String,
+    age: String,
+    accolades: String,
+    contact: String
+});
+
+const Player = mongoose.model("Player", playerSchema);
+
 let record = {
     won: 0,
     lost: 0
@@ -21,52 +41,62 @@ app.put("/api/record", (req, res) => {
     res.status(200).json(record);
 });
 
-app.get("/api/roster", (req, res) => {
-    res.json(roster);
+app.get("/api/roster", async (req, res) => {
+    try {
+        const players = await Player.find();
+        res.json(players);
+    }
+    catch(error) {
+        res.status(500).json({ error: "Error fetching roster" });
+    }
 });
 
-app.post("/api/roster/:id", (req, res) => {
-    const newPlayer = {
+app.post("/api/roster/:id", async (req, res) => {
+    const newPlayer = new Player({
         id: req.params.id,
         ... req.body
+    })
+    try {
+        const createdPlayer = await newPlayer.save();
+        res.status(201).json(createdPlayer);
     }
-    roster.push(newPlayer);
-    res.status(201).json(newPlayer);
-});
-
-app.put("/api/roster/:id", (req, res) => {
-    const updatedPlayer = {
-        id: req.params.id,
-        ... req.body
-    }
-    found = false;
-    roster.forEach((player, index) => {
-        if (player.id == req.params.id) {
-            roster[index] = updatedPlayer;
-            found = true;
-        }
-    });
-    if (found) {
-        res.status(200).json(updatedPlayer);
-    }    
-    else {
-        res.status(400).json( { message: `Player ${req.params.id} unable to be found` } );
+    catch(error) {
+        res.status(500).json({ error: "Error creating player" });
     }
 });
 
-app.delete("/api/roster/:id", (req, res) => {
-    found = false;
-    roster.forEach((player, index) => {
-        if (player.id == req.params.id) {
-            roster.splice(index, 1);
-            found = true;
+app.put("/api/roster/:id", async (req, res) => {
+    try {
+        const updatedPlayer = await Player.findOneAndUpdate(
+            {id: req.params.id}, 
+            req.body,
+            {new: true}
+        );
+
+        if (updatedPlayer) {
+            res.status(200).json(updatedPlayer);
         }
-    });
-    if (found) {
-        res.status(200).json( { message: `Player ${req.params.id} deleted successfully` } );
+        else {
+            res.status(400).json({ message: `player ${req.params.id} unable to be found` });
+        }
     }
-    else {
-        res.status(400).json( { message: `Player ${req.params.id} unable to be found` } );
+    catch(error) {
+        res.status(500).json({ error: "Error updating player" });
+    }
+});
+
+app.delete("/api/roster/:id", async (req, res) => {
+    try {
+        const deletedPlayer = await Player.findOneAndDelete({ id: req.params.id });
+        if (deletedPlayer) {
+            res.status(200).json(deletedPlayer);
+        }
+        else {
+            res.status(400).json({ message: `player ${req.params.id} unable to be found` });
+        }
+    }
+    catch(error) {
+        res.status(500).json({ error: "Error deleting player" });
     }
 });
 
