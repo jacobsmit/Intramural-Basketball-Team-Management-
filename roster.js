@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
             rosterData.forEach(player => {
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                <td></td>
+                <td><img src="images/players/${player.id}.jpeg"></td>
                 <td class="table-name">${player.name}</td>
                 <td>${player.role}</td>
                 <td>${player.height}</td>

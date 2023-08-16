@@ -4,9 +4,22 @@ app = express();
 const PORT = 8080;
 
 let roster = [];
+let record = {
+    won: 0,
+    lost: 0
+} 
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/api/record", (req, res) => {
+    res.json(record);
+});
+
+app.put("/api/record", (req, res) => {
+    record = req.body;
+    res.status(200).json(record);
+});
 
 app.get("/api/roster", (req, res) => {
     res.json(roster);
@@ -37,7 +50,7 @@ app.put("/api/roster/:id", (req, res) => {
         res.status(200).json(updatedPlayer);
     }    
     else {
-        res.status(400).json( { message: `Player ${req.params.id} unable to be found successfully` } );
+        res.status(400).json( { message: `Player ${req.params.id} unable to be found` } );
     }
 });
 
@@ -53,7 +66,7 @@ app.delete("/api/roster/:id", (req, res) => {
         res.status(200).json( { message: `Player ${req.params.id} deleted successfully` } );
     }
     else {
-        res.status(400).json( { message: `Player ${req.params.id} unable to be found successfully` } );
+        res.status(400).json( { message: `Player ${req.params.id} unable to be found` } );
     }
 });
 
