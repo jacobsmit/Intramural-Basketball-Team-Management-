@@ -12,6 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(rosterData => {
             console.log(rosterData);
             rosterData.forEach(player => {
+                let accolades = "";
+                player.accolades.split(',').forEach(accolade => {
+                    accolades += `<p>${accolade}</p>`;
+                })
                 const row = document.createElement("tr");
                 row.innerHTML = `
                 <td><img src="images/players/${player.id}.jpeg"></td>
@@ -20,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${player.height}</td>
                 <td>${player.weight}</td>
                 <td>${player.age}</td>
-                <td>${player.accolades}</td>
+                <td class="accolades">${accolades}</td>
                 <td>${player.contact}</td>
                 `
                 rosterTable.appendChild(row);
