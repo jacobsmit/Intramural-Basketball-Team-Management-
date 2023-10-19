@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const scoreboard = document.querySelector("#season-record-score");
 
-    fetch("http://localhost:8080/api/record")
+    fetch("https://trog-manager-bcfe3b731fee.herokuapp.com/api/record")
     .then(res => {
         if (!res.ok) {
             throw new Error('Network response was not ok');

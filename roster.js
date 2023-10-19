@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const rosterTable = document.querySelector("#roster-table");
 
     function populateRoster() {
-        fetch("http://localhost:8080/api/roster/")
+        fetch("https://trog-manager-bcfe3b731fee.herokuapp.com/api/roster")
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
